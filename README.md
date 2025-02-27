@@ -49,6 +49,12 @@ Developed by Byteint.com https://www.byteint.com/
    ```
    Your local IP will be displayed in the console when you start the server.
 
+## Optional 
+   If you need HLS/DASH streaming (which requires transcoding), there's an alternative approach:
+   ```
+   npm install node-media-server@lates
+   ```
+
 ### Server Structure
 
 - `server.js` - The main server file that sets up the RTMP and web servers
