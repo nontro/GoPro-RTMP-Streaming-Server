@@ -35,6 +35,7 @@ Developed by Byteint.com https://www.byteint.com/
 3. Create the media directory:
    ```bash
    mkdir media
+   chmod 755 media
    ```
 
 4. Start the server:
