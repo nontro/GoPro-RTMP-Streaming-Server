@@ -49,7 +49,7 @@ Developed by Byteint.com https://www.byteint.com/
    ```
    Your local IP will be displayed in the console when you start the server.
 
-## Optional 
+### Optional 
    If you need HLS/DASH streaming (which requires transcoding), there's an alternative approach:
    ```
    npm install node-media-server@lates
@@ -77,9 +77,9 @@ Developed by Byteint.com https://www.byteint.com/
 2. Connect your GoPro to your computer via USB
 3. Use the capture software to direct the stream to your local RTMP server
 
-## Troubleshooting
+### Troubleshooting
 
-### Port Conflicts
+#### Port Conflicts
 
 If you see "address already in use" errors, other services might be using the required ports:
 ```
@@ -98,30 +98,30 @@ sudo kill -9 PID
 
 Alternatively, edit `server.js` to use different ports.
 
-### Media Directory Issues
+#### Media Directory Issues
 
 If you see "MediaRoot cannot be written" errors, ensure:
 1. The `media` directory exists
 2. Your user has write permissions to this directory
 3. The path to the media directory is correctly specified in `server.js`
 
-### Streaming Issues
+#### Streaming Issues
 
 1. Ensure your GoPro and server are on the same network
 2. Verify your GoPro has streaming capabilities enabled
 3. Check your GoPro's battery level - streaming requires significant power
 4. Try restarting both the server and the GoPro
 
-## License
+### License
 
 MIT
 
-## Acknowledgments
+### Acknowledgments
 
 - [Node Media Server](https://github.com/illuspas/Node-Media-Server) - The underlying RTMP server implementation
 - [hls.js](https://github.com/video-dev/hls.js/) - HLS playback library for browsers
 - [dash.js](https://github.com/Dash-Industry-Forum/dash.js) - DASH playback library for browsers
 
-# Contributing
+### Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
