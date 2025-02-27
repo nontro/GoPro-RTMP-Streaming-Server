@@ -1,0 +1,150 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <meta name="description" content="Local RTMP Server GoPro">
+  <meta name="keywords" content="HTML,CSS,JavaScript">
+  <meta name="author" content="SLZ - Byteint.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoPro Local Streaming</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.2.4/hls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.5.2/dash.all.min.js"></script>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto">
+        <header class="bg-blue-600 text-white p-4 rounded-t-lg">
+            <h1 class="text-2xl font-bold">GoPro Local Streaming</h1>
+            <p id="server-info" class="text-sm mt-2">Loading server information...</p>
+        </header>
+
+        <div class="bg-white p-4 shadow-md rounded-b-lg">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold mb-2">Live Stream</h2>
+                <div class="relative pt-[56.25%] bg-black rounded">
+                    <video id="videoPlayer" class="absolute top-0 left-0 w-full h-full" controls></video>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="p-4 border rounded">
+                    <h3 class="font-medium mb-2">Stream URLs</h3>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <p class="font-semibold">RTMP URL (for OBS/streaming software):</p>
+                            <code id="rtmpUrl" class="block bg-gray-100 p-2 rounded text-xs overflow-x-auto"></code>
+                        </div>
+                        <div>
+                            <p class="font-semibold">HLS URL (for browsers):</p>
+                            <code id="hlsUrl" class="block bg-gray-100 p-2 rounded text-xs overflow-x-auto"></code>
+                        </div>
+                        <div>
+                            <p class="font-semibold">DASH URL (alternative for browsers):</p>
+                            <code id="dashUrl" class="block bg-gray-100 p-2 rounded text-xs overflow-x-auto"></code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4 border rounded">
+                    <h3 class="font-medium mb-2">Streaming Options</h3>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="block text-sm font-medium">Stream Protocol</label>
+                            <select id="streamProtocol" class="mt-1 block w-full p-2 border rounded">
+                                <option value="hls">HLS (recommended)</option>
+                                <option value="dash">DASH</option>
+                            </select>
+                        </div>
+                        <button id="refreshPlayer" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Refresh Player
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded p-4">
+                <h3 class="font-medium mb-2">GoPro Streaming Instructions</h3>
+                <ol class="list-decimal pl-5 space-y-2 text-sm">
+                    <li>Connect your GoPro to the same Wi-Fi network as this server.</li>
+                    <li>On your GoPro, enable streaming mode (varies by model).</li>
+                    <li>Set the RTMP URL from above as the streaming destination.</li>
+                    <li>Start streaming from your GoPro.</li>
+                    <li>The video should appear in the player above after a short delay.</li>
+                </ol>
+                <p class="mt-4 text-sm text-gray-600">Note: Exact steps for enabling RTMP streaming vary by GoPro model. Consult your GoPro manual for specific instructions.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get server information
+            fetch('/api/server-info')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('server-info').textContent = `Server running at ${data.localIp}`;
+                    document.getElementById('rtmpUrl').textContent = data.rtmpUrl + '/stream';
+                    document.getElementById('hlsUrl').textContent = data.hlsUrl;
+                    document.getElementById('dashUrl').textContent = data.dashUrl;
+                    
+                    // Initialize the player with HLS by default
+                    initializePlayer('hls', data.hlsUrl);
+                })
+                .catch(error => {
+                    console.error('Error fetching server info:', error);
+                    document.getElementById('server-info').textContent = 'Error connecting to server';
+                });
+            
+            // Handle player refresh
+            document.getElementById('refreshPlayer').addEventListener('click', function() {
+                const protocol = document.getElementById('streamProtocol').value;
+                const hlsUrl = document.getElementById('hlsUrl').textContent;
+                const dashUrl = document.getElementById('dashUrl').textContent;
+                
+                if (protocol === 'hls') {
+                    initializePlayer('hls', hlsUrl);
+                } else {
+                    initializePlayer('dash', dashUrl);
+                }
+            });
+        });
+        
+        function initializePlayer(type, url) {
+            const video = document.getElementById('videoPlayer');
+            
+            // Clean up existing players
+            if (window.hls) {
+                window.hls.destroy();
+                window.hls = null;
+            }
+            
+            if (window.dashPlayer) {
+                window.dashPlayer.reset();
+                window.dashPlayer = null;
+            }
+            
+            if (type === 'hls') {
+                if (Hls.isSupported()) {
+                    window.hls = new Hls();
+                    window.hls.loadSource(url);
+                    window.hls.attachMedia(video);
+                    window.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play();
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Native HLS support (Safari)
+                    video.src = url;
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play();
+                    });
+                }
+            } else if (type === 'dash') {
+                window.dashPlayer = dashjs.MediaPlayer().create();
+                window.dashPlayer.initialize(video, url, true);
+            }
+        }
+    </script>
+</body>
+</html>
