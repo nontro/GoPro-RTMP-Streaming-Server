@@ -4,7 +4,7 @@ A lightweight local RTMP streaming server designed for wirelessly streaming vide
 Developed by Byteint.com https://www.byteint.com/
 
 
-# Features
+### Features
 
 - **Local RTMP Server**: Stream directly from GoPro to your local network
 - **Web Interface**: View streams in any browser without additional software
@@ -12,14 +12,14 @@ Developed by Byteint.com https://www.byteint.com/
 - **Easy Setup**: Simple configuration and clear instructions
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 
-# Prerequisites
+### Prerequisites
 
 - Node.js (v14 or newer)
 - FFmpeg (optional, for transcoding)
 - GoPro with streaming capabilities
 - All devices on the same local network
 
-# Installation
+### Installation
 
 1. Clone this repository or download the files:
    ```bash
@@ -48,15 +48,15 @@ Developed by Byteint.com https://www.byteint.com/
    ```
    Your local IP will be displayed in the console when you start the server.
 
-# Server Structure
+### Server Structure
 
 - `server.js` - The main server file that sets up the RTMP and web servers
 - `public/index.html` - Web interface for viewing streams and server information
 - `media/` - Directory where streaming media files are temporarily stored
 
-# Setting Up Your GoPro
+### Setting Up Your GoPro
 
-## For GoPro HERO9, HERO10, HERO11, and newer:
+### For GoPro HERO9, HERO10, HERO11, and newer:
 
 1. Connect your GoPro to the same Wi-Fi network as this server
 2. Go to Preferences > Connections > Connect to GoPro App
@@ -64,15 +64,15 @@ Developed by Byteint.com https://www.byteint.com/
 4. In the app, choose Custom as the streaming platform
 5. Enter the RTMP URL displayed on your web interface (usually `rtmp://your-local-ip:1935/live/stream`)
 
-## For GoPro HERO8 and older:
+### For GoPro HERO8 and older:
 
 1. Some older models may require third-party applications like GoPro Studio or OBS
 2. Connect your GoPro to your computer via USB
 3. Use the capture software to direct the stream to your local RTMP server
 
-# Troubleshooting
+## Troubleshooting
 
-## Port Conflicts
+### Port Conflicts
 
 If you see "address already in use" errors, other services might be using the required ports:
 ```
@@ -91,25 +91,25 @@ sudo kill -9 PID
 
 Alternatively, edit `server.js` to use different ports.
 
-## Media Directory Issues
+### Media Directory Issues
 
 If you see "MediaRoot cannot be written" errors, ensure:
 1. The `media` directory exists
 2. Your user has write permissions to this directory
 3. The path to the media directory is correctly specified in `server.js`
 
-## Streaming Issues
+### Streaming Issues
 
 1. Ensure your GoPro and server are on the same network
 2. Verify your GoPro has streaming capabilities enabled
 3. Check your GoPro's battery level - streaming requires significant power
 4. Try restarting both the server and the GoPro
 
-# License
+## License
 
 MIT
 
-# Acknowledgments
+## Acknowledgments
 
 - [Node Media Server](https://github.com/illuspas/Node-Media-Server) - The underlying RTMP server implementation
 - [hls.js](https://github.com/video-dev/hls.js/) - HLS playback library for browsers
