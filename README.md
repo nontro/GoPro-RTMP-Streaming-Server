@@ -23,8 +23,8 @@ Developed by Byteint.com https://www.byteint.com/
 
 1. Clone this repository or download the files:
    ```bash
-   git clone https://github.com/yourusername/gopro-rtmp-server.git
-   cd gopro-rtmp-server
+   git clone https://github.com/nontro/GoPro-RTMP-Streaming-Server.git
+   cd GoPro-RTMP-Streaming-Server
    ```
 
 2. Install dependencies:
