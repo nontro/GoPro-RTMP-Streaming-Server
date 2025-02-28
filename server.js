@@ -19,6 +19,9 @@ if (!fs.existsSync(mediaDir)) {
   fs.mkdirSync(mediaDir, { recursive: true });
 }
 
+// Make sure this path is correct for your system
+const ffmpegPath = process.platform === 'win32' ? 'C:\\ffmpeg\\bin\\ffmpeg.exe' : '/usr/bin/ffmpeg';
+
 // Configuration with absolute paths
 const config = {
   logType: 3,
@@ -33,6 +36,16 @@ const config = {
     port: 8000,
     allow_origin: '*',
     mediaroot: mediaDir // Use absolute path
+  },
+  trans: {
+    ffmpeg: ffmpegPath,
+    tasks: [
+      {
+        app: 'live',
+        hls: true,
+        hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]'
+      }
+    ]
   }
 };
 
